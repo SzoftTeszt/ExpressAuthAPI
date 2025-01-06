@@ -5,7 +5,7 @@ const cors = require("cors")
 
 const app = express()
 
-app.use(cors({origin:["*"]}))
+app.use(cors({origin:["http://localhost:4200", "https://localhost:4200"]}))
 
 app.use(bodyParser.json())
 
