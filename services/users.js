@@ -14,6 +14,20 @@ async function create(user){
 
 }
 
+async function getMail(email){
+    const query = `select * from users where email=?`
+    const params = [email]
+    try{
+        const [row] = await db.query(query, params)
+        if (!row) throw new Error("A felhasználó nem található!")
+        return row
+    }
+    catch(error){
+        throw new Error("Az adatbázis nem elérhető!")
+    }
+}
+
 module.exports={
-    create
+    create,
+    getMail
 }
