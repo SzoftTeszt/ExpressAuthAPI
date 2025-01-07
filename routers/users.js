@@ -4,11 +4,18 @@ const router = express.Router()
 const users = require("../services/users")
 const jwt = require("jsonwebtoken")
 
-const SECRETKEY ="Titkoskod"
+// const crypto = require('crypto')
+// const kod = crypto.randomBytes(32).toString('hex')
+// console.log("Kód: ", kod)
+require('dotenv').config()
+const SECRETKEY = process.env.SECRETKEY
+console.log("Kód: ",  SECRETKEY)
 
 function authenticationToken(req,res,next){
-    const token =   req.headers.authorization
-    console.log("Token", token)
+    // const token =   req.headers.authorization
+
+    const token = req.cookies.token
+    console.log("Token:",  req.cookies)
     if (!token) return res.status(401).json({message:"Hozzáférés megtagadva, nincs token!"})
     
     jwt.verify(token, SECRETKEY, (err,user)=>{
@@ -43,7 +50,15 @@ router.post("/signin", async(req,res,next)=>{
         
         if (user && passwordMatch){
             const token = await jwt.sign({id:user.id}, SECRETKEY, {expiresIn:"1h"})
-            const resUser= {...user, accessToken:token}
+            res.cookie('token', token, {
+                httpOnly:true,
+                secure:true,
+                sameSite:'none',
+                maxAge:3600000
+            })
+            
+            // const resUser= {...user, accessToken:token}
+            const resUser= {...user}
             delete resUser.password
             res.status(200).json(resUser)
         }
