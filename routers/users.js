@@ -77,4 +77,26 @@ router.get("/secretdata", authenticationToken, async(req,res)=>{
     res.status(200).json({message:"Itt a titok!"})
 })
 
+router.put('/update-profile',authenticationToken, async(req, res)=>{
+    const {address, userName} = req.body
+    try {
+        const updateUser= await users.updateprofile(req.user.id, {address, userName})
+    }
+    catch(err){
+        res.status(401).send("Hiba történt a profile frissítésekor!")
+    }
+
+})
+
+
+router.post("/logout", authenticationToken, async(req,res)=>{
+    res.cookie('token', '', {
+        httpOnly:true,
+        secure:true,
+        sameSite:'none',
+        expires: new Date(0)
+    })
+    res.status(200).json({message:"A kijelentkezés sikeres!"})
+})
+
 module.exports= router

@@ -27,7 +27,12 @@ async function getMail(email){
     }
 }
 
+async function updateprofile(userId, userData){
+// megcsinálni
+}
+
 module.exports={
     create,
+    updateprofile,
     getMail
 }
